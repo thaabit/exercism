@@ -26,7 +26,7 @@ class Tournament
     out = FORMAT % %w[Team MP W D L P] + "\n"
     if not h.empty?
       (h.sort_by { |team, h| [-h[:P], team] }).each do |team, h|
-        out += FORMAT % [team, h[:MP], h[:W], h[:D], h[:L], h[:P]] + "\n"
+        out += FORMAT % [team, h.slice(:MP,:W,:D,:L,:P).values] + "\n"
       end
     end
     out
