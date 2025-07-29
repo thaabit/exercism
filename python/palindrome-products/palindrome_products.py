@@ -10,19 +10,14 @@ def largest(min_factor, max_factor):
     """
     if min_factor > max_factor: raise ValueError('min must be <= max')
 
-    largest_ = 0
-    range_ = range(min_factor, max_factor + 1)
-    for i in range_:
-        p = i * i
-        if p > largest_ and is_palindrome(p):
-            largest_ = p
+    largest_, factors = None, []
+    for i in range(max_factor ** 2, min_factor ** 2 - 1, -1):
+        if is_palindrome(i):
+            factors = get_factors(i, min_factor, max_factor)
+            if factors:
+                largest_ = i
+                break
 
-    for pair in list(itertools.combinations(range_, 2)):
-        p = pair[0] * pair[1]
-        if p > largest_ and is_palindrome(p):
-            largest_ = p
-    if largest_ == 0: return (None, [])
-    factors = get_factors(largest_, min_factor, max_factor)
     return (largest_, factors)
 
 
@@ -37,19 +32,15 @@ def smallest(min_factor, max_factor):
     """
 
     if min_factor > max_factor: raise ValueError('min must be <= max')
-    smallest_ = max_factor * max_factor
-    range_ = range(min_factor, max_factor + 1)
-    for i in range_:
-        p = i * i
-        if p < smallest_ and is_palindrome(p):
-            smallest_ = p
 
-    for pair in list(itertools.combinations(range_, 2)):
-        p = pair[0] * pair[1]
-        if p < smallest_ and is_palindrome(p):
-            smallest_ = p
-    if not is_palindrome(smallest_): return (None, [])
-    factors = get_factors(smallest_, min_factor, max_factor)
+    smallest_, factors = None, []
+    for i in range(min_factor ** 2, max_factor ** 2 + 1):
+        if is_palindrome(i):
+            factors = get_factors(i, min_factor, max_factor)
+            if factors:
+                smallest_ = i
+                break
+
     return (smallest_, factors)
 
 def is_palindrome(number):
