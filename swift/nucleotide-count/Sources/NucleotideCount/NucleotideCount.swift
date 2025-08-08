@@ -9,8 +9,8 @@ class DNA {
     "G": 0,
     "T": 0,
   ]
-  init(strand:String) {
-    try! Array(strand).forEach {
+  init(strand:String) throws {
+    Array(strand).forEach {
         let char = String($0)
         guard counts[char] != nil else {
             throw NucleotideCountErrors.invalidNucleotide
