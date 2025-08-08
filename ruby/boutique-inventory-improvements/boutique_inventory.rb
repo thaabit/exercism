@@ -7,7 +7,7 @@ class BoutiqueInventory
   end
 
   def item_names
-    items.map { |item| item.name }.sort
+    items.map(&:name).sort
   end
 
   def total_stock
