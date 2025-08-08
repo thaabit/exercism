@@ -10,7 +10,7 @@ func frontDoorPassword(_ phrase: String) -> String {
         if let char = trimmed.first {
             return partial + String(char)
         } else {
-            return partial
+            return partial + "_"
         }
     } ?? ""
 }
@@ -21,7 +21,7 @@ func backDoorPassword(_ phrase: String) -> String {
         if let char = trimmed.last {
             return partial + String(char)
         } else {
-            return partial
+            return partial + "_"
         }
     }
     return pw + ", please"
