@@ -2,30 +2,27 @@ func remainingMinutesInOven(elapsedMinutes elapsed: Int, expectedMinutesInOven e
     expected - elapsed
 }
 
-func preparationTimeInMinutes(_ layers: String...) -> Int {
-    layers.count
+func preparationTimeInMinutes(layers: String...) -> Int {
+    layers.count * 2
 }
 
-func quantities(_ layers: String...) ->  [String: Int] {
-    var out : [String: Int] = [:]
+func quantities(layers: String...) ->  (noodles: Int, sauce: Double) {
+    var noodles = 0
+    var sauce = 0.0
     for l in layers {
-        if var q = out[l] {
-            q += 1
-        }
-        else {
-            out[l] = 1
-        }
+        if l == "noodles" { noodles += 3 }
+        if l == "sauce"   { sauce += 0.2 }
     }
-    return out
+    return (noodles: noodles, sauce: sauce)
 }
 
 let OZ_PER_LITER = 33.814
 func toOz(_ tuple: inout (noodles: Int, sauce: Double)) {
     tuple.sauce *= OZ_PER_LITER
-    return
 }
 
-func redWine(_ layers: String...) -> Bool {
-    var q = quantities(layers)
-    return (q["mozarella"] ?? 0 + q["béchamel"] ?? 0 + q["ricotta"] ?? 0) <= (q["sauce"] ?? 0 + q["meat"] ?? 0)
+func redWine(layers: String...) -> Bool {
+    let white = layers.count { ["mozzarella", "béchamel", "ricotta"].contains($0) }
+    let red   = layers.count { ["sauce", "meat"].contains($0) }
+    return red >= white
 }
