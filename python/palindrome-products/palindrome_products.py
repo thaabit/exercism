@@ -54,13 +54,7 @@ def smallest(min_factor, max_factor):
 
 def is_palindrome(number):
     num = str(number)
-    start = 0
-    end = len(num) - 1
-    while start <= end:
-        if num[start] != num[end]: return False
-        start += 1
-        end -= 1
-    return True
+    return num[::-1] == num
 
 def get_factors(number, min_factor, max_factor):
     factors = []
