@@ -5,19 +5,17 @@ enum GrainsError: Error {
     case inputTooHigh
 }
 struct Grains {
-  static func square(_ num: Int) throws -> UInt64 {
-    if num < 1  { throw GrainsError.inputTooLow  }
-    if num > 64 { throw GrainsError.inputTooHigh }
+  static var total : UInt64 {
+    get { (1...64).reduce(UInt64(0), { sum, square in sum + grains(square) }) }
+  }
+  static func square(_ square: Int) throws -> UInt64 {
+    guard square >= 1  else { throw GrainsError.inputTooLow  }
+    guard square <= 64 else { throw GrainsError.inputTooHigh }
 
-    return UInt64(pow(2.0, Double(num - 1)))
+    return grains(square)
+  }
+  private static func grains(_ square: Int) -> UInt64 {
+      UInt64(pow(2.0, Double(square - 1)))
   }
 
-  static var total : UInt64 = {
-    (1...64).reduce(UInt64(0), { result, next in
-        if let s = try? Grains.square(next) {
-            return result + s
-        }
-        return 0
-    })
-  }()
 }
