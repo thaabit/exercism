@@ -1,8 +1,12 @@
-func flattenArray(_ array:[Any]) -> [Int] {
+func flattenArray(_ array:[Any?]) -> [Int] {
     var out : [Int] = []
-    func flatten(_ array:[Any]) {
-        for i in array {
-            if let a = i as? [Any] { flatten(a) } else { out.append(Int(i)) }
+    func flatten(_ array:[Any?]) {
+        for item in array {
+            if let arr = item as? [Any] {
+                flatten(arr)
+            } else if let i = item as? Int {
+                out.append(i)
+            }
         }
     }
     flatten(array)
