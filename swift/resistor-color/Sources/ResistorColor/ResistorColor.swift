@@ -1,7 +1,7 @@
 import Foundation
 
 enum ResistorColor {
-    let colors = [
+    static let colors = [
         "black",
         "brown",
         "red",
@@ -13,7 +13,7 @@ enum ResistorColor {
         "grey",
         "white",
     ]
-    func colorCode(for color:String) -> Int {
-        colors.firstIndex(of: color)
+    static func colorCode(for color:String) throws -> Int {
+        ResistorColor.colors.firstIndex(of: color)!
     }
 }
