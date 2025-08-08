@@ -3,19 +3,26 @@ enum NucleotideCountErrors: Error {
 }
 
 class DNA {
-  var counts = [
+  var _counts = [
     "A": 0,
     "C": 0,
     "G": 0,
     "T": 0,
   ]
+  var strand: String = ""
+
   init(strand:String) throws {
-    Array(strand).forEach {
+    print(strand)
+    try Array(strand).forEach {
         let char = String($0)
-        guard counts[char] != nil else {
+        guard self._counts[char] != nil else {
             throw NucleotideCountErrors.invalidNucleotide
         }
-        counts[char]! += 1
+        self._counts[char]! += 1
     }
+  }
+
+  func counts() -> [String: Int] {
+    self._counts
   }
 }
