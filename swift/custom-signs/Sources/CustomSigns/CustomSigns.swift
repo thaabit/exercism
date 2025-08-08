@@ -8,7 +8,7 @@ let BASE_COST = 20
 let COST_PER_LETTER = 2
 
 func buildSign(for occasion: String, name: String) -> String {
-  "Happy \(occasion) \(name)"
+  "Happy \(occasion) \(name)!"
 }
 
 func graduationFor(name: String, year: Int) -> String {
@@ -18,5 +18,3 @@ func graduationFor(name: String, year: Int) -> String {
 func costOf(sign: String) -> Int {
   BASE_COST + sign.count * COST_PER_LETTER
 }
-
-print(buildSign(for: anniversary, name: "Bob")
