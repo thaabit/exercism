@@ -1,5 +1,5 @@
-// TODO: define the 'LogLevel' enum, its `init`, and its `shortFormat` method
-enum LogLevel : String {
+import RegexBuilder
+enum LogLevel : Int {
     case trace   = 0
     case debug   = 1
     case info    = 4
@@ -8,22 +8,25 @@ enum LogLevel : String {
     case fatal   = 7
     case unknown = 42
 
-    init(msg: String) {
-        var lvl = "unknown"
-        if let short = /^\[(.*?)\]/.wholeMatch(in: msg) {
-            switch String(short) {
-                case "TRC": lvl = "trace"
-                case "DBG": lvl = "debug"
-                case "INF": lvl = "info"
-                case "WRN": lvl = "warning"
-                case "ERR": lvl = "error"
-                case "FTL": lvl = "fatal"
-                default   : lvl = "unknown"
+    init(_ message: String) {
+        let search = Regex { "["; Capture(OneOrMore(.word)); "]" }
+        if let result = message.firstMatch(of: search) {
+            switch result.1 {
+                case "TRC": self = .trace
+                case "DBG": self = .debug
+                case "INF": self = .info
+                case "WRN": self = .warning
+                case "ERR": self = .error
+                case "FTL": self = .fatal
+                default   : self = .unknown
             }
+        }
+        else {
+            self = .unknown
         }
     }
 
-    func shortFormat(msg : String) -> String {
-        "\(self.rawValue): \(msg)"
+    func shortFormat(message : String) -> String {
+        "\(self.rawValue):\(message)"
     }
 }
