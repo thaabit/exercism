@@ -1,47 +1,57 @@
-class Node:
-    def __init__(self, value, left=None, right=None):
-        self.value = value
-        self.left = left
-        self.right = right
-
 class Zipper:
     @staticmethod
-    def from_tree(tree):
-        left = Zipper.from_tree(tree["left"]) if tree["left"] else None
-        right = Zipper.from_tree(tree["right"]) if tree["right"] else None
-        root = Node(tree["value"], left, right)
-        return Zipper(root)
+    def from_tree(tree, parent=None):
+        z = Zipper(tree["value"], parent)
+        z.set_left(tree["left"])
+        z.set_right(tree["right"])
+        return z
 
-    def __init__(self, focus):
-        self.focus = focus
+    def __init__(self, value, parent=None):
+        self._value = value
+        self.parent = parent
+        self._left = None
+        self._right = None
 
     def value(self):
-        return self.focus.value
+        return self._value
 
     def set_value(self, value):
-        self.value = value
+        self._value = value
+        return self
 
     def left(self):
-        return self.focus.left
+        return self._left
 
     def set_left(self, tree):
-        self.focus.left = Zipper.from_tree(tree)
+        if not tree or isinstance(tree, Zipper):
+            self._left = tree
+        else:
+            self._left = Zipper.from_tree(tree, self)
+        return self
 
     def right(self):
-        return self.focus.right
+        return self._right
 
-    def set_right(self):
-        self.focus.right = Zipper.from_tree(tree)
+    def set_right(self, tree):
+        if not tree or isinstance(tree, Zipper):
+            self._right = tree
+        else:
+            self._right = Zipper.from_tree(tree, self)
+        return self
 
     def up(self):
-        pass
+        return self.parent
 
     def to_tree(self):
-        if not self: return None
-        left = self.left().to_tree() if self.left() else None
-        right = self.right().to_tree() if self.right() else None
+        while self.up(): self = self.up()
+        return self._to_tree()
+
+    def _to_tree(self):
+        left = self._left._to_tree() if self._left else None
+        right = self._right._to_tree() if self._right else None
         d = {
             "value": self.value(),
             "left": left,
             "right": right,
         }
+        return d
