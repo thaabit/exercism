@@ -9,5 +9,3 @@ def combinations(target, size, exclude):
             valid.append(list(combo))
 
     return valid
-
-print(combinations(7, 3, []))
