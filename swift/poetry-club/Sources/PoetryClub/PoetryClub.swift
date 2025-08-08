@@ -12,7 +12,7 @@ func frontDoorPassword(_ phrase: String) -> String {
         } else {
             return partial + "_"
         }
-    } ?? ""
+    }
 }
 
 func backDoorPassword(_ phrase: String) -> String {
@@ -28,15 +28,11 @@ func backDoorPassword(_ phrase: String) -> String {
 }
 
 func secretRoomPassword(_ phrase: String) -> String {
-    var pw = splitOnNewlines(phrase).enumerated().reduce("") { (partial, cur_line) in
+    let pw = splitOnNewlines(phrase).enumerated().reduce("") { (partial, cur_line) in
         let (index, cur_line) = cur_line
         let trimmed = cur_line.trimmingCharacters(in: .whitespacesAndNewlines)
         let char = trimmed[trimmed.index(trimmed.startIndex, offsetBy: index)]
-        if char != nil {
-            return partial + String(char)
-        } else {
-            return partial
-        }
+        return partial + String(char)
     }
     return pw.uppercased + "!"
 }
