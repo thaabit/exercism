@@ -1,15 +1,23 @@
-class Triangle<T> {
-  var sides:[T]
+class Triangle<T:Numeric & Comparable> {
+  var a:T
+  var b:T
+  var c:T
+
   init(_ sides:[T]) {
-    self.sides = sides
+    a = sides[0]
+    b = sides[1]
+    c = sides[2]
   }
-  func isEquilateral() -> Bool {
-    return sides[0] == sides[1] && sides[1] == sides[2]
+  var isTriangle: Bool {
+    a > 0 && b > 0 && c > 0 && (a + b >= c) && (b + c >= a) && (a + c >= b)
   }
-  func isIsosceles() -> Bool {
-    return sides[0] == sides[1] || sides[1] == sides[2] || sides[0] == sides[2]
+  var isEquilateral: Bool {
+    self.isTriangle && a == b && b == c
   }
-  func isScalene() -> Bool {
-    return !isIsosceles()
+  var isIsosceles: Bool {
+    self.isTriangle && (a == b || b == c || a == c)
+  }
+  var isScalene: Bool {
+    return self.isTriangle && (a != b && b != c && a != c)
   }
 }
