@@ -3,7 +3,7 @@ enum Type {
 }
 
 func classifier(listOne one:[Int], listTwo two:[Int]) -> Type {
-    if one == two { return .equal }
+    if sublist(one, two) && sublist(two, one) { return .equal }
     if sublist(one, two)  { return .sublist }
     if sublist(two, one)  { return .superlist }
     return .unequal
