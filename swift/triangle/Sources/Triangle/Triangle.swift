@@ -1,4 +1,4 @@
-class Triangle {
+class Triangle<T> {
   var sides:[T]
   init(_ sides:[T]) {
     self.sides = sides
