@@ -18,7 +18,7 @@ struct Base {
         return acc + digit * Int(pow(Double(inputBase), Double(exp)))
     })
 
-    var out:[Int]()
+    var out:[Int] = []
     while base10 > 0 {
         out.append(base10 % outputBase)
         base10 /= outputBase
