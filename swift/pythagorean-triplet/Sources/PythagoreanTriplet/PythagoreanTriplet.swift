@@ -2,7 +2,7 @@ import Foundation
 
 func tripletsWithSum(_ sum: Int) -> [[Int]] {
   var out = [[Int]]()
-  let half = sum / 2
+  let half = sum / 3
   for a in 2...half {
       if a >= half - 1 { break }
       for b in a+1...half {
