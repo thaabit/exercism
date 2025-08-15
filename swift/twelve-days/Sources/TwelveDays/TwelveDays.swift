@@ -19,14 +19,10 @@ class TwelveDaysSong {
     static func recite(start:Int, end:Int) -> String {
         var verses = [String]()
         let partridge = gifts[1]
-        for i in start...end {
-            var list = [String]()
-            for i2 in (1...i).reversed() {
-                list.append(gifts[i2])
-            }
-            var verse = "On the \(ordinals[start]) day of Christmas my true love gave to me: "
-            if list.count > 0 {
-                verse += list.joined(separator:", ") + ", and a "
+        for verse_idx in start...end {
+            var verse = "On the \(ordinals[verse_idx]) day of Christmas my true love gave to me: "
+            if verse_idx > 1 {
+                verse += (2...verse_idx).reversed().map { gifts[$0] }.joined(separator:", ") + ", and "
             }
             verse += partridge
             verses.append(verse)
@@ -34,4 +30,3 @@ class TwelveDaysSong {
         return verses.joined(separator:"\n")
     }
 }
-print(TwelveDaysSong.recite(start: 1, end: 1))
