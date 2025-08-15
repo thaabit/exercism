@@ -6,7 +6,7 @@ class AtbashCipher {
     static func encode(_ phrase: String) -> String {
         var out = "", count = 0
         for l in Array(phrase.lowercased()) {
-            guard String(l).wholeMatch(of:#/[a-z0-9]/#) != nil else { continue }
+            guard l.isLetter || l.isNumber else { continue }
             if count == 5 { out.append(" "); count = 0 }
             out.append(cipher[letters.firstIndex(of:l)!])
             count += 1
@@ -15,11 +15,9 @@ class AtbashCipher {
     }
 
     static func decode(_ phrase: String) -> String {
-        var out = ""
-        for l in Array(phrase) {
-            guard l != " " else { continue }
-            out.append(letters[cipher.firstIndex(of:l)!])
-        }
-        return out
+        Array(phrase).reduce("", { acc, l in
+            guard !l.isWhitespace else { return acc }
+            return acc + String(letters[cipher.firstIndex(of:l)!])
+        })
     }
 }
