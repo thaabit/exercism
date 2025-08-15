@@ -1,23 +1,23 @@
-class Element {
+class Element<T> {
     var next:Element?
-    var value:Int?
+    var value:T?
 
-    init(_ val:Int?, _ next:Element?) {
+    init(_ val:T? = nil, _ next:Element? = nil) {
         self.value = val
         self.next = next
     }
 
     func reverseElements() -> Element {
-        next = self.next!
-        while next != nil {
-            next!.next = self
-            next = next!.next
+        if let next = self.next {
+            print(next.value)
+            next.next = self
+            return next.reverseElements()
         }
-        return next!
+        return self
     }
 
-    func toArray() -> [Int] {
-        var out:[Int] = [self.value!]
+    func toArray() -> [T] {
+        var out:[T] = [self.value!]
         var next = self.next
         while next != nil {
             out.append(next!.value!)
@@ -26,7 +26,7 @@ class Element {
         return out
     }
 
-    static func fromArray(_ arr:[Int]) -> Element {
+    static func fromArray(_ arr:[T]) -> Element {
         var arr = arr
         let first:Element = Element(arr.removeFirst(), nil)
         var prev = first
@@ -37,3 +37,10 @@ class Element {
         return first
     }
 }
+
+    let one = Element(1, nil)
+    let two = Element(2, one)
+    print(one.next ?? 0, two.next ?? 0)
+    let twoR = two.reverseElements()
+    print(twoR.value!)
+    print(twoR.next?.value)
