@@ -1,6 +1,6 @@
 let DEFAULT_VALUE = -1
 func spiralMatrix(size: Int) -> [[Int]] {
-    if size == 0 { return [] }
+    guard size > 0 else { return [] }
     let dirs = [(0,1),(1,0),(0,-1),(-1,0)]
     var dirIndex = 0, num = 1, point = (0,0)
     var out = Array(repeating: Array(repeating: DEFAULT_VALUE, count: size), count: size)
