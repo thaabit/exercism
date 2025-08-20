@@ -1,15 +1,18 @@
-infix operator ^^ { associativity left precedence 160 }
-func ^^ (radix: T, power: T) -> T {
-    return T(pow(Double(radix), Double(power)))
+import Foundation
+import RealModule
+
+infix operator ^^ : MultiplicationPrecedence
+func ^^ (radix: Double, power: Double) -> Double {
+    return Double(pow(Double(radix), Double(power)))
 }
 
-class ComplexNumbers<T> {
-    var real:T
-    var imaginary:T
+class ComplexNumbers {
+    var real:Double
+    var imaginary:Double
 
-    init(realComponent:T, imaginaryComponent:T) {
+    init(realComponent:Double, imaginaryComponent:Double?) {
         real = realComponent
-        imaginary = imaginaryComponent
+        imaginary = imaginaryComponent ?? 0
     }
 
     func mul(complexNumber other:ComplexNumbers) -> ComplexNumbers {
@@ -23,8 +26,8 @@ class ComplexNumbers<T> {
     func div(complexNumber other:ComplexNumbers) -> ComplexNumbers {
         let a = real, b = imaginary, c = other.real, d = other.imaginary
         return ComplexNumbers(
-            realComponent:      (a * c + b * d) / (c^^2 + d^^2)
-            imaginaryComponent: (b * c - a * d) / (c^^2 + d^^2)
+            realComponent:      (a * c + b * d) / (c^^2 + d^^2),
+            imaginaryComponent: (b * c - a * d) / (c^^2 + d^^2),
         )
     }
 
@@ -44,17 +47,29 @@ class ComplexNumbers<T> {
         )
     }
 
-    func absolute() -> T {
+    func absolute() -> Double {
         let a = real, b = imaginary
         return sqrt(a^^2 + b^^2)
     }
 
     func exponent() -> ComplexNumbers {
         let a = real, b = imaginary
-         e^a * (cos(b) + i * sin(b))
         return ComplexNumbers(
-            realComponent: 
-            imaginaryComponent:
+            realComponent:      exp(a) * cos(b),
+            imaginaryComponent: exp(a) * sin(b),
         )
+    }
+
+    func conjugate() -> ComplexNumbers {
+        let a = real, b = imaginary
+        return ComplexNumbers(
+            realComponent:      a,
+            imaginaryComponent: -b,
+        )
+    }
+    static func ==(lhs: ComplexNumbers, rhs: ComplexNumbers) -> Bool {
+        let tlr = 0.00001
+        return lhs.real.isApproximatelyEqual(to:rhs.real, absoluteTolerance:tlr) &&
+               lhs.imaginary.isApproximatelyEqual(to:rhs.imaginary, absoluteTolerance:tlr)
     }
 }
