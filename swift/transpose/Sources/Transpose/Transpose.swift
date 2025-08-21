@@ -7,8 +7,7 @@ struct Transpose {
         for line in lines {
             let line = Array(line)
             for x in 0..<max {
-                //if x >= line.count { continue }
-                let c = line.indices.contains(x) ? line[x] : " "
+                let c = line.indices.contains(x) ? line[x] : "\0"
                 if out.indices.contains(x) {
                     out[x].append(c)
                 }
@@ -17,9 +16,11 @@ struct Transpose {
                 }
             }
         }
-        out = out.map { $0.replacingOccurrences(of:"\\s+$", with:"", options:.regularExpression) }
+        out = out.map {
+            $0.replacingOccurrences(of:"\0+$", with:"", options:.regularExpression)
+              .replacingOccurrences(of:"\0", with:" ", options:.regularExpression)
+        }
 
         return out
     }
 }
-//print(Transpose.transpose(["The first line.", "The second line."]))
