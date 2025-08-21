@@ -14,8 +14,9 @@ class Tournament {
     func addMatch(_ match:String) {
         let parts = match.components(separatedBy:";")
         let nameA = parts[0], nameB = parts[1], result = parts[2]
-        var teamA = teams[nameA] ?? Team(name:nameA)
-        var teamB = teams[nameB] ?? Team(name:nameB)
+        teams[nameA] = teams[nameA] ?? Team(name:nameA)
+        teams[nameB] = teams[nameB] ?? Team(name:nameB)
+        var teamA = teams[nameA], teamB = teams[nameB]
         if result == "loss" {
             teamA.losses += 1
             teamB.wins += 1
