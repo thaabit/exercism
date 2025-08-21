@@ -2,15 +2,18 @@ class MatchingBrackets {
     static func paired(text: String) -> Bool {
 
         var stack = [Character]()
-        let openers = Array("([{")
-        let closers = Array(")]}")
+        let brackets:[Character:Character] = [
+            "(": ")",
+            "[": "]",
+            "{": "}",
+        ]
 
         for char in Array(text) {
-            if openers.contains(char) {
+            if brackets.keys.contains(char) {
                 stack.append(char)
-            } else if closers.contains(char) {
+            } else if brackets.values.contains(char) {
                 guard stack.count > 0 else { return false }
-                guard openers.firstIndex(of:stack.removeLast())! == closers.firstIndex(of:char)! else { return false }
+                guard brackets[stack.removeLast()] == char else { return false }
             }
         }
 
