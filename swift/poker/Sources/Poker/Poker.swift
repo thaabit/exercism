@@ -9,78 +9,65 @@ extension String {
     subscript(i: Int) -> String { String(self[index(startIndex, offsetBy: i)]) }
 }
 
+let CARD_ORDER = Array("0123456789XJQKA").map({String($0)})
+let HAND_TYPES = ["high_card","1_pair","2_pairs","3_of_a_kind","straight","flush","full_house","4_of_a_kind","straight_flush"]
+
 class Hand {
     var cards:String
-    static let CARD_ORDER = Array("0123456789XJQKA").map({String($0)})
-    static let HAND_TYPES = ["HC","1P","2P","3K","ST","FL","FH","4K","SF"]
 
     init(_ cards:String) { self.cards = cards }
 
-    func byCardValue(lhs:String, rhs:String) -> Bool { Hand.cardVal(lhs) < Hand.cardVal(rhs) }
-
-    func cardsOfValue(_ val:Int, _ dict:[String:Int]) -> [String] {
-        var out = [String]()
-        for (key, value) in dict {
-            if value == val { out.append(key) }
+    func sortedVals(_ val:Int, _ dict:[String:Int]) -> [Int] {
+        var out = [Int]()
+        for (card, value) in dict {
+            if value == val { out.append(Int(CARD_ORDER.firstIndex(of:card)!)) }
         }
-        return out.sorted(by:byCardValue).reversed()
+        return out.sorted().reversed()
     }
 
-
-    static func cardVal(_ card:String) -> Int {
-        Int(CARD_ORDER.firstIndex(of:card)!)
+    func handVal(_ type:String) -> Int {
+        Int(HAND_TYPES.firstIndex(of:type)!)
     }
-    static func handVal(_ type:String) -> Int { Int(HAND_TYPES.firstIndex(of:type)!) }
 
-    func handType() -> (String,[String]) {
+    func handType() -> [Int] {
+
+        // parse the hand
         let cards = cards.replace("10","X").split(" ")
-        var nums = [String:Int](), suits: Set<String>
+        var ranks = [String:Int](), suits = Set<String>()
         for card in cards {
             let number = card[0], suit = card[1]
-            nums[number, default:0] += 1
+            ranks[number, default:0] += 1
             suits.insert(suit)
         }
-        let highCard = nums.keys.max(by: byCardValue)!, lowCard = nums.keys.min(by: byCardValue)!
-        let highCardVal = Hand.cardVal(highCard), lowCardVal = Hand.cardVal(lowCard)
-        let ones = cardsOfValue(1,nums), twos = cardsOfValue(2,nums), threes = cardsOfValue(3,nums), fours = cardsOfValue(4,nums)
-        let isFiveHighStraight = ["A","2","3","4","5"].allSatisfy(nums.keys.contains)
+        let singles = sortedVals(1,ranks), doubles = sortedVals(2,ranks), triples = sortedVals(3,ranks), quads = sortedVals(4,ranks)
+        var compValues = quads + triples + doubles + singles
+        let is5HighStraight = ["A","2","3","4","5"].allSatisfy(ranks.keys.contains)
 
-        let isST = (nums.keys.count == 5 && highCardVal - lowCardVal == 4) || isFiveHighStraight
-        let isFL = suits.count == 1
-        let isSF = isST && isFL
-        let is3K = threes.count == 1
-        let is1P = twos.count == 1
-        let isFH = is3K && is1P
-        let is4K = fours.count == 1
-        let is2P = twos.count == 2
+        // evaluate hand types
+        var types = [String:Bool]()
+        types["straight"] = (ranks.keys.count == 5 && compValues.max()! - compValues.min()! == 4) || is5HighStraight
+        types["flush"] = suits.count == 1
+        types["straight_flush"] = types["straight"]! && types["flush"]!
+        types["3_of_a_kind"] = triples.count == 1
+        types["1_pair"] = doubles.count == 1
+        types["full_house"] = types["3_of_a_kind"]! && types["1_pair"]!
+        types["4_of_a_kind"] = quads.count == 1
+        types["2_pairs"] = doubles.count == 2
+        types["high_card"] = true
 
-        var compCards = fours + threes + twos + ones
-        if isFiveHighStraight { compCards.removeFirst() } // remove the ace
-        if isSF { return ("SF", compCards) }
-        if is4K { return ("4K", compCards) }
-        if isFH { return ("FH", compCards) }
-        if isFL { return ("FL", compCards) }
-        if isST { return ("ST", compCards) }
-        if is3K { return ("3K", compCards) }
-        if is2P { return ("2P", compCards) }
-        if is1P { return ("1P", compCards) }
-        return ("HC", compCards)
+        if is5HighStraight { compValues.removeFirst() } // remove the ace
+        for type in HAND_TYPES.reversed() {
+            if types[type]! { return [handVal(type)] + compValues }
+        }
+        return [] // should never get here
     }
 
     static func >(lhs: Hand, rhs: Hand) -> Bool {
-
         let v1 = lhs.handType(), v2 = rhs.handType()
-        let handType1  = v1.0, handType2  = v2.0
-        let compCards1 = v1.1, compCards2 = v2.1
-        let handVal1 = handVal(handType1), handVal2 = handVal(handType2)
 
-        // compare hands first
-        if handVal1 != handVal2 { return handVal1 > handVal2 }
-
-        // now compare high cards
-        for i in 0..<compCards1.count {
-            let c1 = cardVal(compCards1[i]), c2 = cardVal(compCards2[i])
-            if c1 != c2 { return c1 > c2 }
+        // start with hand type then high cards
+        for (i,val1) in v1.enumerated() {
+            if val1 != v2[i] { return val1 > v2[i] }
         }
         return false
     }
@@ -94,10 +81,10 @@ class Poker {
     }
 
     func bestHands() -> String {
-        var best = Hand(hands[0])
-        for hand in hands {
-            if best.cards == hand { continue }
-            let hand = Hand(hand)
+        var hands = hands
+        var best = Hand(hands.removeFirst())
+        for h in hands {
+            let hand = Hand(h)
             if hand > best { best = hand }
         }
         return best.cards
