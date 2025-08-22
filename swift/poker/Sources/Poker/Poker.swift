@@ -29,7 +29,7 @@ class Hand {
         Int(HAND_TYPES.firstIndex(of:type)!)
     }
 
-    func handType() -> [Int] {
+    func parseHand() -> [Int] {
 
         // parse the hand
         let cards = cards.replace("10","X").split(" ")
@@ -39,8 +39,8 @@ class Hand {
             ranks[number, default:0] += 1
             suits.insert(suit)
         }
-        let singles = sortedVals(1,ranks), doubles = sortedVals(2,ranks), triples = sortedVals(3,ranks), quads = sortedVals(4,ranks)
-        var compValues = quads + triples + doubles + singles
+        let numberGroups = (1...4).map { sortedVals($0, ranks) }
+        var compValues = Array(numberGroups.reversed().reduce([],+))
         let is5HighStraight = ["A","2","3","4","5"].allSatisfy(ranks.keys.contains)
 
         // evaluate hand types
@@ -48,11 +48,11 @@ class Hand {
         types["straight"] = (ranks.keys.count == 5 && compValues.max()! - compValues.min()! == 4) || is5HighStraight
         types["flush"] = suits.count == 1
         types["straight_flush"] = types["straight"]! && types["flush"]!
-        types["3_of_a_kind"] = triples.count == 1
-        types["1_pair"] = doubles.count == 1
+        types["3_of_a_kind"] = numberGroups[2].count == 1
+        types["1_pair"] = numberGroups[1].count == 1
         types["full_house"] = types["3_of_a_kind"]! && types["1_pair"]!
-        types["4_of_a_kind"] = quads.count == 1
-        types["2_pairs"] = doubles.count == 2
+        types["4_of_a_kind"] = numberGroups[3].count == 1
+        types["2_pairs"] = numberGroups[1].count == 2
         types["high_card"] = true
 
         if is5HighStraight { compValues.removeFirst() } // remove the ace
@@ -63,11 +63,12 @@ class Hand {
     }
 
     static func >(lhs: Hand, rhs: Hand) -> Bool {
-        let v1 = lhs.handType(), v2 = rhs.handType()
+
+        let lhs = lhs.parseHand(), rhs = rhs.parseHand()
 
         // start with hand type then high cards
-        for (i,val1) in v1.enumerated() {
-            if val1 != v2[i] { return val1 > v2[i] }
+        for (i,lval) in lhs.enumerated() {
+            if lval != rhs[i] { return lval > rhs[i] }
         }
         return false
     }
@@ -90,3 +91,4 @@ class Poker {
         return best.cards
     }
 }
+//print(Poker(["2H 3H 4H 5H 6H", "4D AD 3D 2D 5D"]).bestHands())
