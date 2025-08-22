@@ -34,18 +34,19 @@ class Hand {
 
     func handType() -> (String,[String]) {
         let cards = cards.replace("10","X").split(" ")
-        var nums = [String:Int](), suits = [String:Int]()
+        var nums = [String:Int](), suits: Set<String>
         for card in cards {
             let number = card[0], suit = card[1]
-            suits[suit] = suits[suit, default:0] + 1
-            nums[number] = nums[number, default:0] + 1
+            nums[number, default:0] += 1
+            suits.insert(suit)
         }
         let highCard = nums.keys.max(by: byCardValue)!, lowCard = nums.keys.min(by: byCardValue)!
         let highCardVal = Hand.cardVal(highCard), lowCardVal = Hand.cardVal(lowCard)
         let ones = cardsOfValue(1,nums), twos = cardsOfValue(2,nums), threes = cardsOfValue(3,nums), fours = cardsOfValue(4,nums)
         let isFiveHighStraight = ["A","2","3","4","5"].allSatisfy(nums.keys.contains)
+
         let isST = (nums.keys.count == 5 && highCardVal - lowCardVal == 4) || isFiveHighStraight
-        let isFL = suits.keys.count == 1
+        let isFL = suits.count == 1
         let isSF = isST && isFL
         let is3K = threes.count == 1
         let is1P = twos.count == 1
