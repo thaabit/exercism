@@ -1,21 +1,20 @@
 class ResistorColorTrio
-  @@order = %w[black brown red orange yellow green blue violet grey white]
+  ORDER = %w[black brown red orange yellow green blue violet grey white].freeze
 
   def initialize(colors)
     @colors = colors
   end
 
+  def digit(index)
+    ORDER.index(@colors[index])
+  end
   def label
-    one = @@order.find_index(@colors[0])
-    two = @@order.find_index(@colors[1])
-    zeroes = "0" * @@order.find_index(@colors[2])
+    value = [digit(0), digit(1)].join.to_i
+    value *= 10 ** digit(2)
 
-    value = "#{one}#{two}#{zeroes}".to_i
-    units = "ohms"
-    if value > 1000
-        value = value / 1000
-        units = "kiloohms"
-    end
+    units = value > 1000 ? "kiloohms" : "ohms"
+    value /= 1000 if value > 1000
+
     return "Resistor value: #{value} #{units}"
   end
 end
