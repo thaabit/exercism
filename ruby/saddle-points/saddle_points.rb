@@ -1,19 +1,13 @@
 class Grid
-  def self.saddle_points(input)
-    cols = input.transpose
+  def self.saddle_points(rows)
+    cols = rows.transpose
     out = []
-    input.each_with_index do |row, y|
-      max_in_row = row.max
-      row.each_with_index do |el, x|
-        if el == max_in_row
-          min_in_col = cols[x].min
-          if el == min_in_col
-            out.append({
-              "row"    => y + 1,
-              "column" => x + 1,
-            })
-          end
-        end
+    rows.each_with_index do |row, y|
+      row.each_with_index do |height, x|
+        out.append({
+          "row"    => y + 1,
+          "column" => x + 1,
+        }) if height == row.max and height == cols[x].min
       end
     end
     return out
