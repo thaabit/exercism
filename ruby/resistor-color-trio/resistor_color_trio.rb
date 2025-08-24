@@ -8,9 +8,9 @@ class ResistorColorTrio
   def digit(index)
     ORDER.index(@colors[index])
   end
+
   def label
-    value = [digit(0), digit(1)].join.to_i
-    value *= 10 ** digit(2)
+    value = [digit(0), digit(1)].join.to_i * 10 ** digit(2)
 
     units = value > 1000 ? "kiloohms" : "ohms"
     value /= 1000 if value > 1000
