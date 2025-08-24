@@ -1,10 +1,10 @@
 class Nucleotide
   def initialize(dna)
+    throw ArgumentError unless dna.match(/^[ACGT]*$/)
     @dna = dna.chars
   end
   def self.from_dna(dna)
-    throw ArgumentError unless dna.match(/^[ACGT]*$/)
-    initialize(dna)
+    new(dna)
   end
   def count()
     @dna.count
