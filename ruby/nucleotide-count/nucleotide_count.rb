@@ -3,15 +3,19 @@ class Nucleotide
     throw ArgumentError unless dna.match(/^[ACGT]*$/)
     @dna = dna.chars
   end
+
   def self.from_dna(dna)
     new(dna)
   end
-  def count()
-    @dna.count
+
+  def count(nucleotide)
+    @dna.count(nucleotide)
   end
+
   def histogram
-    @dna.tally
+    tally = @dna.tally
+    'ATCG'.chars.each { |nuc| tally[nuc] ||= 0 }
+    tally
   end
 
 end
-puts Nucleotide.from_dna('AGCTTTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATTAAAAAAAGAGTGTCTGATAGCAGC').histogram
