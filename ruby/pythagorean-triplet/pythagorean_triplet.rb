@@ -1,16 +1,10 @@
 class PythagoreanTriplet
   def self.triplets_with_sum(num)
-    half = num/2
-    out = []
-    (2...half).each { |a|
-      (a+1...half).each { |b|
-        c = num - a - b
-        lhs = a**2 + b**2
-        rhs = c**2
-        break if lhs > rhs
-        out.append([a,b,c]) if lhs == rhs
-      }
+    (1...(num/3)).each_with_object([]) { |a, out|
+      b = (num * (num - 2 * a)) / (2 * (num - a))
+      c = num - a - b
+      next if a > b || b > c
+      out << [a,b,c] if a**2 + b**2 == c**2
     }
-    return out
   end
 end
