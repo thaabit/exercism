@@ -6,17 +6,18 @@ class Prime
     (n - 1).times do
       loop do
         i += 2
-        break if i == 3
-        is_prime = true
-        (3..(Math.sqrt(i).to_i + 1)).step(2).each { |j|
-          if i % j == 0
-            is_prime = false
-            break
-          end
-        }
-        break if is_prime
+        break if is_prime?(i)
       end
     end
     return i
+  end
+
+  def self.is_prime?(n)
+    return true if n == 2
+    return true if n == 3
+    (3..(Math.sqrt(n).to_i + 1)).step(2).each { |factor|
+      return false if n % factor == 0
+    }
+    return true
   end
 end
