@@ -1,7 +1,7 @@
 class Palindromes
   attr_reader :largest, :smallest
 
-  def initialize(max_factor, min_factor:1)
+  def initialize(max_factor:, min_factor:1)
     @max_factor = max_factor
     @min_factor = min_factor
     @largest = { value: nil, factors: [] }
