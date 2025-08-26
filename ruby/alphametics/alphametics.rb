@@ -15,15 +15,13 @@ class Alphametics
       }
     }
     multipliers = letters.map { |char, idx| var_hash[char] }
-    no_zeroes = letters.map { |char, idx| firsts.key?(char) }
+    no_zeroes = letters.each_with_object({}).with_index { |(char, hash), idx| hash[idx] = 1 if firsts.key?(char) }
 
     (0..9).to_a.permutation(letters.size).lazy.each { |numbers|
-      next if !numbers.each_index.select { |idx|
+      next if numbers.each_index.any? { |idx|
         numbers[idx] == 0 and no_zeroes[idx]
-      }.empty?
-      return letters.zip(numbers).to_h if numbers.each_index.inject(0) { |agg,idx|
-        agg + numbers[idx] * multipliers[idx]
-      }.zero?
+      }
+      return letters.zip(numbers).to_h if numbers.zip(multipliers).map {|x,y| x*y}.sum.zero?
     }
     return {}
   end
