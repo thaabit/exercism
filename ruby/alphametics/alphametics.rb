@@ -21,7 +21,7 @@ class Alphametics
       next if numbers.each_index.any? { |idx|
         numbers[idx] == 0 and no_zeroes[idx]
       }
-      return letters.zip(numbers).to_h if numbers.zip(multipliers).map {|x,y| x*y}.sum.zero?
+      return letters.zip(numbers).to_h if numbers.each_index.map { |i| numbers[i] * multipliers[i] }.sum.zero?
     }
     return {}
   end
