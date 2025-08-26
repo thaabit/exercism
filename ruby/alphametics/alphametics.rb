@@ -2,6 +2,7 @@ class Alphametics
   def self.solve(puzzle)
     letters = puzzle.scan(/[A-Z]/).uniq
     firsts = puzzle.scan(/\b([A-Z])[A-Z]/).flatten.tally
+    return {} if letters.size > 10
 
     vars = puzzle.split(/\s*[+=]+\s*/)
     last_index = vars.length - 1
