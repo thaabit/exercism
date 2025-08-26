@@ -2,21 +2,29 @@ class Alphametics
   def self.solve(puzzle)
     letters = puzzle.scan(/[A-Z]/).uniq
     firsts = puzzle.scan(/\b([A-Z])[A-Z]/).flatten.tally
-    perms = (0..9).to_a.permutation(letters.size)
 
-    perms.each { |perm|
-      return letters.zip(perm).to_h if works?(puzzle, perm, letters, firsts)
+    vars = puzzle.split(/\s*[+=]+\s*/)
+    last_index = vars.length - 1
+    var_hash = vars.each_with_object(Hash.new(0)).with_index { |(var, hash), var_idx|
+      var.chars.reverse.each_with_index { |char, idx|
+        if var_idx == last_index
+          hash[char] -= 10**idx
+        else
+          hash[char] += 10**idx
+        end
+      }
+    }
+    multipliers = letters.map { |char, idx| var_hash[char] }
+    no_zeroes = letters.map { |char, idx| firsts.key?(char) }
+
+    (0..9).to_a.permutation(letters.size).lazy.each { |numbers|
+      next if !numbers.each_index.select { |idx|
+        numbers[idx] == 0 and no_zeroes[idx]
+      }.empty?
+      return letters.zip(numbers).to_h if numbers.each_index.inject(0) { |agg,idx|
+        agg + numbers[idx] * multipliers[idx]
+      }.zero?
     }
     return {}
-  end
-
-  def self.works?(puzzle, numbers, letters, firsts)
-    dup = puzzle.dup
-    letters.zip(numbers).each { |(letter,number)|
-      return false if number == 0 and firsts.key?(letter)
-      dup.gsub!(letter, number.to_s)
-    }
-    parts = dup.split(/\s[=+]+\s/).map(&:to_i)
-    return parts.pop.to_i == parts.sum
   end
 end
