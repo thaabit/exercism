@@ -9,30 +9,34 @@ end
 class SimpleLinkedList
     def initialize(array=[])
       @tail = nil
-      array.each { |e| push(Element(e)) }
+      array.each { |e| push(Element.new(e)) }
     end
+
     def to_a
-      return [] unless @tail
-      el, out = @tail, [@tail.datum]
-      while el.next
-        el = el.next
+      el, out = @tail, []
+      until el.nil?
         out << el.datum
+        el = el.next
       end
-      out
+      return out
     end
+
     def push(element)
       element.next = @tail if @tail
       @tail = element
-      self
+      return self
     end
+
     def pop
-      return nil unless @tail
-      @tail = element.next
-      self
+      el = @tail
+      @tail = @tail.next if @tail
+      return el
     end
+
     def reverse!
+      prev = @tail or return self
       cur = @tail.next
-      prev = @tail
+      @tail.next = nil
       until cur.nil?
         tmp = cur.next
         cur.next = prev
@@ -40,7 +44,9 @@ class SimpleLinkedList
         cur = tmp
       end
       @tail = prev
+      return self
     end
+
     def ==(rhs)
       rhs and self.to_a == rhs.to_a
     end
