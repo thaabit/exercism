@@ -1,21 +1,17 @@
 class Affine
-  LOWER = ('a'..'z').to_a
+  ALPHA = [*'a'..'z'].join
 
   def initialize(a, b)
+    raise ArgumentError unless a.gcd(ALPHA.length) == 1
     @a, @b = a, b
+    @cipher = ALPHA.chars.map { |char| ALPHA[(@a * ALPHA.index(char) + @b) % ALPHA.length] }.join
   end
 
   def encode(plaintext)
-    plaintext.downcase.chars.map { |char|
-      LOWER.include?(char) ? LOWER[(@a * LOWER.index(char) + @b) % 26] : ""
-    }.each_slice(5).to_a.map(&:join).join(" ")
+    plaintext.downcase.gsub(/\W/,"").tr(ALPHA, @cipher).chars.each_slice(5).map(&:join).join(" ")
   end
 
   def decode(ciphertext)
-    ciphertext.chars.map { |char|
-      p [char, (@a**-1), LOWER.index(char), @b].inspect
-      LOWER.include?(char) ? LOWER[(@a**-1) * (LOWER.index(char) - @b) % 26] : ""
-    }.join
+    ciphertext.delete(' ').tr(@cipher, ALPHA)
   end
 end
-p cipher = Affine.new(19, 16).decode('qdwju nqcro muwhn odqun oppmd aunwd o')
