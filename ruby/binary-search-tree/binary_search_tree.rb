@@ -1,26 +1,9 @@
-class BstEnumerator < Enumerator
-  def initialize(start)
-    @start = start
-  end
-  def next
-
-  end
-
-end
 class Bst
   attr_reader :data, :left, :right
   def initialize(data)
     @data = data
     @left = nil
     @right = nil
-  end
-
-  def each
-    start = self
-    while start.left
-      start = start.left
-    end
-    BstEnumerator.new(start)
   end
 
   def insert(data)
