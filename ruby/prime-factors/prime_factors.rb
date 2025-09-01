@@ -1,13 +1,13 @@
 class PrimeFactors
   def self.of(num, primes=[])
-    return primes if num <= 1
-    (2..num).each { |i|
+    (2..num).each_with_object([]) { |i, out|
+      return out if num <= 1
       if num % i == 0
         while num % i == 0
-          primes << i
+          out << i
           num = num / i
         end
-        return of(num, primes)
+        return out + of(num, primes)
       end
     }
   end
