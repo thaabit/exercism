@@ -14,13 +14,12 @@ class House
     ["lay in", "house that Jack built."]
   ].reverse
   def self.recite
-    LINES.each_with_object([]).with_index { |(line, obj), index|
+    LINES.map.with_index { |line, index|
       out = ["This is the " + line[1]]
       LINES[0..index - 1].reverse.each_with_index { |subline, idx2|
         out << "that #{subline[0]} the #{subline[1]}"
       } if index > 0
-      obj << out.join("\n")
-    }.join("\n\n")
+      out.join("\n")
+    }.join("\n\n") + "\n"
   end
 end
-p House.recite
