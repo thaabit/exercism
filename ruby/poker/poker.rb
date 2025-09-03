@@ -9,23 +9,25 @@ class Poker
 
     ranks = hand.map { |card| (CARD_VALUE[card[0].to_sym] || card[0..-1]).to_i }.sort
     ranks = [1,2,3,4,5] if ranks == [2,3,4,5,14]
-    counts = ranks.each_with_object(Hash.new(0)) { |num, agg| agg[num] += 1 }
-    groups = counts.values
+    sets = ranks.each_with_object(Hash.new(0)) { |num, agg| agg[num] += 1 }
 
     flush = hand.map { |card| card[-1] }.uniq.size == 1
     straight = (ranks.max - ranks.min == 4) && (ranks.uniq.size == 5)
+    twos = sets.select { |_, count| count == 2 }.keys.sort.reverse
+    three, four = sets.key(3), sets.key(4)
+    high = ranks.max
 
-    comps = []
-    comps << (straight && flush ? ranks.max : 0)
-    comps << (counts.key(4) || 0)
-    comps << (groups.include?(3) && groups.include?(2) ? [counts.key(3), counts.key(2)] : [0, 0])
-    comps << (flush ? ranks.max : 0)
-    comps << (straight ? ranks.max : 0)
-    comps << (counts.key(3) || 0)
-    comps << (groups.count(2) == 2 ? counts.select { |rank, count| count == 2 }.keys.sort.reverse : [0, 0])
-    comps << (counts.key(2) || 0)
-    comps += ranks.reverse
-    comps
+    {
+      :royal    => (straight && flush  ? high    : 0),
+      :four     => (four               ? four    : 0),
+      :full     => (three && twos.any? ? [three, twos[0]] : [0, 0]),
+      :flush    => (flush              ? high    : 0),
+      :straight => (straight           ? high    : 0),
+      :three    => (three              ? three   : 0),
+      :pairs    => (twos.size == 2     ? twos    : [0, 0]),
+      :pair     => (twos.any?          ? twos[0] : 0),
+      :high     => ranks.reverse
+    }.values
   end
 
   def best_hand
