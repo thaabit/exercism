@@ -10,7 +10,7 @@ class OcrNumbers
     " _   |  |": 7,
     " _ |_||_|": 8,
     " _ |_| _|": 9,
- }
+ }.default = '?'
  def self.convert(input)
    input = input.split("\n")
    raise ArgumentError if input.length    % 4 != 0
