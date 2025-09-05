@@ -6,11 +6,9 @@ class Grep
     pattern = /#{pattern}/i       if flags[:i]
 
     out = []
-    v = flags[:v]
     files.each { |f|
       File.read(f).split("\n").each_with_index { |line, i|
-        m = line.match?(pattern)
-        if (m && !v) || (!m && v)
+        if line.match?(pattern) ^ flags[:v]
           if flags[:l]
             out << f
             break
