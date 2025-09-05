@@ -10,7 +10,9 @@ class OcrNumbers
     " _   |  |": 7,
     " _ |_||_|": 8,
     " _ |_| _|": 9,
- }.default = '?'
+ }
+ NUMBERS.default = '?'
+
  def self.convert(input)
    input = input.split("\n")
    raise ArgumentError if input.length    % 4 != 0
@@ -18,7 +20,7 @@ class OcrNumbers
    input.each_slice(4).map { |line|
      (0..(line[0].length) - 3).step(3).map { |start|
        key = (0..2).map { |i| line[i][start..(start + 2)] }.join.to_sym
-       NUMBERS[key] || '?'
+       NUMBERS[key]
      }
    }.map(&:join).join(",")
  end
