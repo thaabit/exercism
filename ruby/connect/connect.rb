@@ -3,37 +3,35 @@ class Board
     @board = board.map { |row| row.gsub(' ','').chars }
   end
 
-  def find_path(point, char, seen)
-    return false if seen.include?(point)
+  def find_path(row, col, stone, seen)
+    return false if seen.include?([row, col])
+    return false if @board[row][col] != stone
 
-    row, col = point[0], point[1]
     return false if row < 0 or col < 0
     return false if row >= @board.size or col >= @board[0].size
 
     return true if row == @board.size - 1
 
-    seen << point
+    seen << [row, col]
 
     [0,1,-1].permutation(2).each { |dir|
-      new_row, new_col = row + dir[0],  col + dir[1]
-      return true if @board[new_row][new_col] == char && find_path([new_row, new_col], char, seen)
+      return true if find_path(row + dir[0], col + dir[1], stone, seen)
     }
     return false
   end
 
-  def winner?(char)
-    @board[0].each_with_index { |stone, i|
-        return true if stone == char && find_path([0, i], char, [])
+  def winner?(stone)
+    @board[0].size.times { |i|
+      return true if find_path(0, i, stone, [])
     }
     return false
   end
 
   def winner
-    ['O','X'].each { |char|
-      return char if winner?(char)
+    ['O','X'].each { |stone|
+      return stone if winner?(stone)
       @board = @board.transpose
     }
     return ''
   end
-
 end
