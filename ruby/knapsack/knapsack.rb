@@ -6,16 +6,10 @@ class Knapsack
   end
 
   def max_value(items)
-    max_value = nil
-    next_item = ->(weight, value, items) {
-      items.each_with_index { |item, i|
-        items.delete_at(i)
-        next_item.call(item.weight + weight, value + item.value, items.dup) if item.weight + weight <= @max_weight
-        next_item.call(weight, value, items.dup)
+    (1..items.size).flat_map { |size|
+      items.combination(size).filter_map { |combo|
+        combo.sum(&:value) if combo.sum(&:weight) <= @max_weight
       }
-      max_value = value if max_value.nil? or value > max_value
-    }
-    next_item.call(0, 0, items)
-    max_value
+    }.max || 0
   end
 end
