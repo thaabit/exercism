@@ -7,8 +7,8 @@ class Knapsack
 
   def max_value(items)
     (1..items.size).flat_map { |size|
-      items.combination(size).filter_map { |combo|
-        combo.sum(&:value) if combo.sum(&:weight) <= @max_weight
+      items.combination(size).map { |combo|
+        combo.sum(&:weight) <= @max_weight ? combo.sum(&:value) : 0
       }
     }.max || 0
   end
